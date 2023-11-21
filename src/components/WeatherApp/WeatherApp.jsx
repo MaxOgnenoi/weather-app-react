@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import './WeatherApp.css';
 
+
 import search_icon from "../Assets/search.png";
 import clear_icon from "../Assets/clear.png";
 import cloud_icon from "../Assets/cloud.png";
@@ -16,6 +17,7 @@ const WeatherApp = () => {
     const [wicon, setWicon] = useState(cloud_icon);
     const [weatherData, setWeatherData] = useState(null);
     const [hourlyForecast, setHourlyForecast] = useState([]);
+    const [dailyForecast, setDailyForecast] = useState([]);
 
     const inputRef = useRef(null);
 
@@ -107,6 +109,19 @@ const WeatherApp = () => {
                 const currentTime = Math.floor(new Date().getTime() / 1000);
                 const next8HoursForecast = hourlyData.list.filter(hour => hour.dt >= currentTime && hour.dt <= currentTime + 8 * 60 * 60);
 
+                // Fetch daily forecast data
+                let dailyUrl = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${cityName}&cnt=7&units=metric&appid=${apiKey}`;
+                let dailyResponse = await fetch(dailyUrl);
+                let dailyData = await dailyResponse.json();
+
+                // Extract relevant data for each day
+                const dailyForecast = dailyData.list.map(day => ({
+                    date: new Date(day.dt * 1000).toLocaleDateString(),
+                    icon: getWeatherIcon(day.weather[0].icon),
+                    temp: Math.floor(day.temp.day),
+                }));
+
+                setDailyForecast(dailyForecast);
                 // If there are less than 8 hours available, fill the remaining slots with forecasts from the next day
                 const remainingSlots = 8 - next8HoursForecast.length;
                 if (remainingSlots > 0) {
@@ -161,18 +176,26 @@ const WeatherApp = () => {
                 </div>
             </div>
 
+            
             {/* Display hourly forecast */}
-            {/* Display hourly forecast */}
-<div className="hourly-forecast">
-    {hourlyForecast.map((hour, index) => (
-        <div key={index} className="hourly-forecast-item">
-            <div>{new Date(hour.dt * 1000).toLocaleTimeString([], { hour: 'numeric', hour12: true })}</div>
-            <img src={getWeatherIcon(hour.weather[0].icon)} alt="" />
-            <div>{Math.floor(hour.main.temp)}&deg;C</div>
-        </div>
-    ))}
-</div>
-
+            <div className="hourly-forecast">
+                {hourlyForecast.map((hour, index) => (
+                    <div key={index} className="hourly-forecast-item">
+                        <div>{new Date(hour.dt * 1000).toLocaleTimeString([], { hour: 'numeric', hour12: true })}</div>
+                        <img src={getWeatherIcon(hour.weather[0].icon)} alt="" />
+                        <div>{Math.floor(hour.main.temp)}&deg;C</div>
+                    </div>
+                ))}
+            </div>
+            <div className="daily-forecast">
+                {dailyForecast.map((day, index) => (
+                    <div key={index} className="daily-forecast-item">
+                        <div>{day.date}</div>
+                        <img src={day.icon} alt="" />
+                        <div>{day.temp}&deg;C</div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
