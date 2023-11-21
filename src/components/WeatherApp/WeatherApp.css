@@ -26,11 +26,13 @@
     font-weight: 400;
     line-height: 1;
     align-items: center;
+    
 }
 
 .top-bar input::placeholder {
     /* Set the placeholder text color to black */
     color: #000000;
+    
 }
 
 .search-icon img {
@@ -67,7 +69,7 @@
     justify-content: center;
     color: white;
     font-size: 5rem;
-    font-weight: 400;
+    font-weight: 100;
 }
 
 .weather-location {
@@ -75,7 +77,7 @@
     justify-content: center;
     color: white;
     font-size: 2.5rem;
-    font-weight: 400;
+    font-weight: 200;
 }
 
 .data-container {
@@ -94,14 +96,24 @@
 
 .data {
     font-size: 34px;
-    font-weight: 400;
+    font-weight: 100;
 }
 
 .text {
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 100;
 }
 
 .icon {
     margin-top: 10px;
+}
+
+.hourly-forecast {
+display: flex;
+justify-content: center;
+color: white;
+}
+
+.hourly-forecast img{
+    width: 4rem;
 }
