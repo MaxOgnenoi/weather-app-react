@@ -27,6 +27,7 @@ const WeatherApp = () => {
         let currentWeatherResponse = await fetch(currentWeatherUrl);
         let currentWeatherData = await currentWeatherResponse.json();
         setWeatherData(currentWeatherData);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleKeyPress = (event) => {
@@ -99,6 +100,8 @@ const WeatherApp = () => {
                 let hourlyUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${apiKey}`;
                 let hourlyResponse = await fetch(hourlyUrl);
                 let hourlyData = await hourlyResponse.json();
+
+                hourlyData.list.sort((a, b) => a.dt - b.dt);
 
                 // Filter the hourly forecast to show only the next 8 hours from the current time
                 const currentTime = Math.floor(new Date().getTime() / 1000);
