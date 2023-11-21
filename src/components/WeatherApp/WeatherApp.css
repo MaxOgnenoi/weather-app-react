@@ -51,8 +51,11 @@
     color: black;
     border-radius: 0 1.5rem 1.5rem 0;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
-
+.search-icon:hover {
+    background-color: #8b2e0d; /* Change the background color on hover */
+}
 
 .weather-image {
     margin-top: 29px;
