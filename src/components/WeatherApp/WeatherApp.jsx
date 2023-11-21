@@ -30,6 +30,9 @@ const WeatherApp = () => {
         let currentWeatherData = await currentWeatherResponse.json();
         setWeatherData(currentWeatherData);
         // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        // Clear the input field
+        inputRef.current.value = "";
     }, []);
 
     const handleKeyPress = (event) => {
@@ -176,7 +179,7 @@ const WeatherApp = () => {
                 </div>
             </div>
 
-            
+
             {/* Display hourly forecast */}
             <div className="hourly-forecast">
                 {hourlyForecast.map((hour, index) => (
