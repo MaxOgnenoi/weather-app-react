@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import './WeatherApp.css';
 
-
 import search_icon from "../Assets/search.png";
 import clear_icon from "../Assets/clear.png";
 import cloud_icon from "../Assets/cloud.png";
@@ -29,7 +28,6 @@ const WeatherApp = () => {
         let currentWeatherResponse = await fetch(currentWeatherUrl);
         let currentWeatherData = await currentWeatherResponse.json();
         setWeatherData(currentWeatherData);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
 
         // Clear the input field
         inputRef.current.value = "";
@@ -75,7 +73,6 @@ const WeatherApp = () => {
     useEffect(() => {
         if (weatherData) {
             // Set weather icon based on weather conditions
-            // (You can customize this logic based on your weather icons)
             if (weatherData.weather[0].icon === "01d" || weatherData.weather[0].icon === "01n") {
                 setWicon(clear_icon);
             } else if (weatherData.weather[0].icon === "02d" || weatherData.weather[0].icon === "02n") {
@@ -100,30 +97,34 @@ const WeatherApp = () => {
         const fetchData = async () => {
             try {
                 const cityName = inputRef.current.value || "New York";
-
+    
                 // Fetch hourly forecast data
-                let hourlyUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${apiKey}`;
+                let hourlyUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${process.env.REACT_APP_API_KEY}`;
+                console.log("Hourly URL:", hourlyUrl);
                 let hourlyResponse = await fetch(hourlyUrl);
                 let hourlyData = await hourlyResponse.json();
-
+                console.log("Hourly Data:", hourlyData);
+    
                 hourlyData.list.sort((a, b) => a.dt - b.dt);
-
+    
                 // Filter the hourly forecast to show only the next 8 hours from the current time
                 const currentTime = Math.floor(new Date().getTime() / 1000);
                 const next8HoursForecast = hourlyData.list.filter(hour => hour.dt >= currentTime && hour.dt <= currentTime + 8 * 60 * 60);
-
+    
                 // Fetch daily forecast data
                 let dailyUrl = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${cityName}&cnt=7&units=metric&appid=${apiKey}`;
+                console.log("Daily URL:", dailyUrl);
                 let dailyResponse = await fetch(dailyUrl);
                 let dailyData = await dailyResponse.json();
-
+                console.log("Daily Data:", dailyData);
+    
                 // Extract relevant data for each day
                 const dailyForecast = dailyData.list.map(day => ({
                     date: new Date(day.dt * 1000).toLocaleDateString(),
                     icon: getWeatherIcon(day.weather[0].icon),
                     temp: Math.floor(day.temp.day),
                 }));
-
+    
                 setDailyForecast(dailyForecast);
                 // If there are less than 8 hours available, fill the remaining slots with forecasts from the next day
                 const remainingSlots = 8 - next8HoursForecast.length;
@@ -137,10 +138,10 @@ const WeatherApp = () => {
                 console.error("Error fetching hourly forecast:", error);
             }
         };
-
+    
         fetchData();
-    }, [apiKey]);
-
+    }, [search]);
+    
 
     return (
         <div className="container">
@@ -178,7 +179,6 @@ const WeatherApp = () => {
                     </div>
                 </div>
             </div>
-
 
             {/* Display hourly forecast */}
             <div className="hourly-forecast">
